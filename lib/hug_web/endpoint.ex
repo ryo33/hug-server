@@ -11,7 +11,9 @@ defmodule HugWeb.Endpoint do
   ]
 
   socket "/socket", HugWeb.UserSocket,
-    websocket: true,
+    websocket: [
+      check_origin: ["https://hug.hihaheho.com", "http://localhost:3000"]
+    ],
     longpoll: false
 
   # socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

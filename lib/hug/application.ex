@@ -17,10 +17,6 @@ defmodule Hug.Application do
       # Start a worker by calling: Hug.Worker.start_link(arg)
       # {Hug.Worker, arg}
       %{
-        id: Hug.Server,
-        start: {Hug.Server, :start, []}
-      },
-      %{
         id: Hug.RandomMatcher,
         start: {Cizen.Saga, :start_link, [%Hug.RandomMatcher{}]}
       },
