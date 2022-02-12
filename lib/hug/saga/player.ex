@@ -11,7 +11,6 @@ defmodule Hug.Player do
     id = Saga.self()
     Dispatcher.listen(Pattern.new(%Input{id: ^id}))
     Dispatcher.listen(Pattern.new(%Joined{id: ^id}))
-    Dispatcher.listen(Pattern.new(%Matched{id: ^id}))
     Dispatcher.listen(Pattern.new(%RoomCreated{id: ^id}))
     Dispatcher.listen(Pattern.new(%NotFound{id: ^id}))
     %{id: id}
@@ -20,6 +19,7 @@ defmodule Hug.Player do
   @impl true
   def handle_event(%Input{payload: %{"type" => "JoinRandom"}}, state) do
     Dispatcher.dispatch(%JoinRandom{id: state.id})
+
     state
     |> leave()
   end
@@ -33,6 +33,7 @@ defmodule Hug.Player do
   @impl true
   def handle_event(%Input{payload: %{"type" => "CreateRoom"}}, state) do
     Dispatcher.dispatch(%CreateRoom{id: state.id})
+
     state
     |> leave()
   end
@@ -44,15 +45,11 @@ defmodule Hug.Player do
   end
 
   @impl true
-  def handle_event(%Joined{}, state) do
-    Dispatcher.dispatch(%Output{id: state.id, payload: %{"type" => "Joined"}})
-    state
-  end
-
-  @impl true
-  def handle_event(%Matched{id: id1, pair_id: id2}, state) do
-    {:ok, room_id} =
-      Saga.start_link(%Hug.Room{id1: id1, id2: id2}, return: :saga_id, lifetime: self())
+  def handle_event(%Joined{room_id: room_id, is_primary: is_primary}, state) do
+    Dispatcher.dispatch(%Output{
+      id: state.id,
+      payload: %{"type" => "Joined", "is_primary" => is_primary}
+    })
 
     state
     |> Map.put(:room_id, room_id)
@@ -71,7 +68,7 @@ defmodule Hug.Player do
   end
 
   def leave(state) do
-    {room_id, state} = Map.pop(state, :room_id)
+    {room_id, state} = Map.pop(state, :room_id) |> IO.inspect()
 
     if not is_nil(room_id) do
       Saga.stop(room_id)

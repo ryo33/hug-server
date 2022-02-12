@@ -32,15 +32,9 @@ defmodule RoomCreated do
   defstruct @enforce_keys
 end
 
-# First one should create a room when get this event
-defmodule Matched do
-  @enforce_keys [:id, :pair_id]
-  defstruct @enforce_keys
-end
-
 # Second one wait for this event
 defmodule Joined do
-  @enforce_keys [:id]
+  @enforce_keys [:id, :room_id, :is_primary]
   defstruct @enforce_keys
 end
 

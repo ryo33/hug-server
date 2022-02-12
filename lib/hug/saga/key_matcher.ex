@@ -3,7 +3,7 @@ defmodule Hug.KeyMatcher do
 
   use Cizen.Saga
 
-  alias Cizen.{Dispatcher, Pattern, SagaRegistry}
+  alias Cizen.{Dispatcher, Pattern, Saga, SagaRegistry}
   alias Hug.KeyMatcher.Registry
   require Pattern
 
@@ -46,9 +46,12 @@ defmodule Hug.KeyMatcher do
 
       [{other, :ok}] ->
         SagaRegistry.unregister(Registry, other, key)
-        Dispatcher.dispatch(%Matched{id: id, pair_id: other})
-        Dispatcher.dispatch(%Joined{id: id})
-        Dispatcher.dispatch(%Joined{id: other})
+
+        {:ok, saga_id} =
+          Saga.start(%Hug.Room{id1: id, id2: other}, return: :saga_id, lifetime: id)
+
+        Dispatcher.dispatch(%Joined{id: id, room_id: saga_id, is_primary: true})
+        Dispatcher.dispatch(%Joined{id: other, room_id: saga_id, is_primary: false})
     end
   end
 end
