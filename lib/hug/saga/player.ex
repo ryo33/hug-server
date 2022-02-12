@@ -21,6 +21,7 @@ defmodule Hug.Player do
   def handle_event(%Input{payload: %{"type" => "JoinRandom"}}, state) do
     Dispatcher.dispatch(%JoinRandom{id: state.id})
     state
+    |> leave()
   end
 
   @impl true
@@ -33,22 +34,12 @@ defmodule Hug.Player do
   def handle_event(%Input{payload: %{"type" => "CreateRoom"}}, state) do
     Dispatcher.dispatch(%CreateRoom{id: state.id})
     state
+    |> leave()
   end
 
   @impl true
   def handle_event(%Input{payload: %{"type" => "JoinRoom", "key" => number}}, state) do
     Dispatcher.dispatch(%JoinRoom{id: state.id, key: number})
-    state
-  end
-
-  @impl true
-  def handle_event(%Input{payload: %{"type" => "Leave"}}, state) do
-    {room_id, state} = Map.pop(state, :room_id)
-
-    if not is_nil(room_id) do
-      Saga.stop(room_id)
-    end
-
     state
   end
 
@@ -76,6 +67,16 @@ defmodule Hug.Player do
   @impl true
   def handle_event(%NotFound{}, state) do
     Dispatcher.dispatch(%Output{id: state.id, payload: %{"type" => "NotFound"}})
+    state
+  end
+
+  def leave(state) do
+    {room_id, state} = Map.pop(state, :room_id)
+
+    if not is_nil(room_id) do
+      Saga.stop(room_id)
+    end
+
     state
   end
 end
