@@ -27,7 +27,7 @@ defmodule Hug.Application do
       %{
         id: Hug.KeyMatcher.Registry,
         start: {Cizen.SagaRegistry, :start_link, [[keys: :unique, name: Hug.KeyMatcher.Registry]]}
-      },
+      }
       # %{
       #   id: Debug,
       #   start: {Cizen.Saga, :start_link, [%Debug{}]}

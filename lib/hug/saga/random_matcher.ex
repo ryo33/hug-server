@@ -10,7 +10,6 @@ defmodule Hug.RandomMatcher do
 
   @impl true
   def on_start(_saga) do
-    Logger.debug(Saga.self())
     Dispatcher.listen(Pattern.new(%JoinRandom{}))
     # There is no one.
     nil

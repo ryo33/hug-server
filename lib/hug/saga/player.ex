@@ -68,7 +68,7 @@ defmodule Hug.Player do
   end
 
   def leave(state) do
-    {room_id, state} = Map.pop(state, :room_id) |> IO.inspect()
+    {room_id, state} = Map.pop(state, :room_id)
 
     if not is_nil(room_id) do
       Saga.stop(room_id)
