@@ -16,9 +16,14 @@ defmodule Hug.RandomMatcher do
   end
 
   @impl true
+  def handle_event(%JoinRandom{id: id}, id) do
+    # Don't match with myself.
+    id
+  end
+
+  @impl true
   def handle_event(%JoinRandom{id: id}, nil) do
     # Wait for match
-    Logger.debug("wait for match")
     id
   end
 
