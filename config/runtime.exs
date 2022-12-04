@@ -11,6 +11,6 @@ if config_env() == :prod do
   config :hug, HugWeb.Endpoint,
     server: true,
     http: [port: {:system, "PORT"}],
-    url: [host: "server.hug.hihaheho.com", port: 443],
+    url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME"), port: 443],
     check_origin: true
 end
