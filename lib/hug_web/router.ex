@@ -8,4 +8,6 @@ defmodule HugWeb.Router do
   scope "/api", HugWeb do
     pipe_through :api
   end
+
+  get "/health", HugWeb.HealthController, :index
 end
