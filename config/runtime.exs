@@ -10,6 +10,6 @@ import Config
 if config_env() == :prod do
   config :hug, HugWeb.Endpoint,
     server: true,
-    url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME"), port: 80],
+    url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME"), port: 10000],
     check_origin: true
 end
