@@ -14,5 +14,6 @@ defmodule HugWeb.Router do
 
     get "/", HealthController, :index
     get "/health", HealthController, :index
+    get "/healthz", HealthController, :index
   end
 end
